@@ -1,0 +1,693 @@
+<!DOCTYPE html>    
+<html lang="es">    
+<head>    
+  <meta charset="UTF-8">    
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+  <title>¡Feliz Cumpleaños Diego!</title>    
+      
+  <!-- Librería de Confeti -->    
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>    
+    
+  <style>    
+    * {    
+      box-sizing: border-box;    
+      margin: 0;    
+      padding: 0;    
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;    
+    }    
+    
+    body {    
+      background: radial-gradient(circle at center, #0077b6 0%, #03045e 70%, #020224 100%);    
+      color: #ffffff;    
+      min-height: 100vh;    
+      display: flex;    
+      justify-content: center;    
+      align-items: center;    
+      overflow-x: hidden;    
+      position: relative;    
+    }    
+    
+    /* Olas en capas de fondo */    
+    .wave {    
+      position: absolute;    
+      bottom: 0;    
+      left: 0;    
+      width: 100%;    
+      height: 120px;    
+      background: url('https://svgshare.com/i/5be.svg');    
+      background-size: 1000px 120px;    
+    }    
+    
+    .wave1 {    
+      animation: animateWave 20s linear infinite;    
+      z-index: 1;    
+      opacity: 0.2;    
+      bottom: 0;    
+    }    
+    
+    .wave2 {    
+      animation: animateWave_02 10s linear infinite;    
+      z-index: 2;    
+      opacity: 0.35;    
+      bottom: 15px;    
+    }    
+    
+    @keyframes animateWave {    
+      0% { background-position-x: 0; }    
+      100% { background-position-x: 1000px; }    
+    }    
+    
+    @keyframes animateWave_02 {    
+      0% { background-position-x: 0; }    
+      100% { background-position-x: -1000px; }    
+    }    
+    
+    /* Tarjetas Neón Neumórficas */    
+    .screen {    
+      display: none;    
+      flex-direction: column;    
+      align-items: center;    
+      justify-content: center;    
+      text-align: center;    
+      padding: 35px 25px;    
+      width: 90%;    
+      max-width: 680px;    
+      background: rgba(10, 25, 47, 0.7);    
+      backdrop-filter: blur(20px);    
+      -webkit-backdrop-filter: blur(20px);    
+      border-radius: 28px;    
+      border: 2px solid rgba(144, 224, 239, 0.4);    
+      box-shadow: 0 0 30px rgba(0, 180, 216, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.1);    
+      animation: fadeIn 0.6s ease-out forwards;    
+      z-index: 10;    
+      margin: 20px 0;    
+    }    
+    
+    .screen.active {    
+      display: flex;    
+    }    
+    
+    h1 {    
+      font-size: 2.3rem;    
+      color: #90e0ef;    
+      margin-bottom: 15px;    
+      text-shadow: 0 0 18px rgba(144, 224, 239, 0.8), 0 0 5px #fff;    
+    }    
+    
+    p {    
+      font-size: 1.1rem;    
+      line-height: 1.6;    
+      color: #e0f7fa;    
+      margin-bottom: 20px;    
+    }    
+    
+    /* Botones Neón Brillantes */    
+    .btn {    
+      background: linear-gradient(135deg, #00b4d8, #0077b6);    
+      color: #ffffff;    
+      border: 1px solid #90e0ef;    
+      padding: 13px 28px;    
+      font-size: 1rem;    
+      font-weight: bold;    
+      border-radius: 50px;    
+      cursor: pointer;    
+      box-shadow: 0 0 15px rgba(0, 180, 216, 0.6);    
+      transition: all 0.3s ease;    
+      margin: 8px;    
+      text-transform: uppercase;    
+      letter-spacing: 0.5px;    
+    }    
+    
+    .btn:hover {    
+      transform: translateY(-4px) scale(1.05);    
+      box-shadow: 0 0 25px rgba(144, 224, 239, 1);    
+      background: linear-gradient(135deg, #48cae4, #00b4d8);    
+    }    
+    
+    .btn-group {    
+      display: flex;    
+      flex-wrap: wrap;    
+      justify-content: center;    
+      gap: 12px;    
+    }    
+    
+    .music-control {    
+      position: fixed;    
+      top: 20px;    
+      right: 20px;    
+      background: rgba(3, 4, 94, 0.9);    
+      padding: 6px 14px;    
+      border-radius: 30px;    
+      border: 1px solid rgba(144, 224, 239, 0.5);    
+      font-size: 0.85rem;    
+      z-index: 100;    
+      box-shadow: 0 0 10px rgba(0, 180, 216, 0.4);    
+    }    
+    
+    /* Tarjetas de Mensajes */    
+    .card-message {    
+      background: rgba(3, 4, 94, 0.6);    
+      border: 1px solid rgba(144, 224, 239, 0.5);    
+      padding: 25px;    
+      border-radius: 20px;    
+      box-shadow: inset 0 0 15px rgba(0, 180, 216, 0.2);    
+      margin-bottom: 20px;    
+      position: relative;    
+    }    
+    
+    .card-message p {    
+      font-size: 1.2rem;    
+      line-height: 1.7;    
+      color: #ffffff;    
+      margin-bottom: 0;    
+    }    
+    
+    .signature {    
+      text-align: right;    
+      font-style: italic;    
+      color: #90e0ef;    
+      margin-top: 15px;    
+      font-weight: bold;    
+      font-size: 1.15rem;    
+    }    
+    
+    /* Acuario Interactivo */    
+    .aquarium {    
+      position: relative;    
+      width: 100%;    
+      height: 330px;    
+      background: radial-gradient(circle, #00b4d8 0%, #0077b6 50%, #03045e 100%);    
+      border-radius: 20px;    
+      overflow: hidden;    
+      border: 3px solid #90e0ef;    
+      margin-bottom: 15px;    
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.7), 0 0 20px rgba(0, 180, 216, 0.4);    
+      cursor: pointer;    
+    }    
+    
+    .fish-container {    
+      position: absolute;    
+      display: flex;    
+      flex-direction: column;    
+      align-items: center;    
+      transition: top 1.2s ease-out, left 1.2s ease-out;    
+      user-select: none;    
+    }    
+    
+    .fish-emoji {    
+      font-size: 2.5rem;    
+      filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));    
+    }    
+    
+    .fish-name {    
+      font-size: 0.75rem;    
+      background: rgba(3, 4, 94, 0.85);    
+      color: #90e0ef;    
+      padding: 2px 8px;    
+      border-radius: 12px;    
+      white-space: nowrap;    
+      margin-top: -4px;    
+      border: 1px solid rgba(144, 224, 239, 0.4);    
+    }    
+    
+    .food-item {    
+      position: absolute;    
+      font-size: 1.3rem;    
+      animation: fallFood 3s linear forwards;    
+    }    
+    
+    .bubble {    
+      position: absolute;    
+      background: rgba(255, 255, 255, 0.6);    
+      border-radius: 50%;    
+      animation: riseBubble 2.5s ease-in forwards;    
+    }    
+    
+    .stats {    
+      font-size: 1rem;    
+      color: #ffd166;    
+      margin-bottom: 10px;    
+      font-weight: bold;    
+      text-shadow: 0 0 8px rgba(255, 209, 102, 0.6);    
+    }    
+    
+    /* Lluvia de Chocolates */    
+    .choco-drop {    
+      position: fixed;    
+      top: -50px;    
+      font-size: 2.2rem;    
+      z-index: 999;    
+      animation: dropChoco 3s linear forwards;    
+    }    
+    
+    /* Pastel Interactivo */    
+    .cake-container {    
+      margin: 20px 0;    
+      position: relative;    
+      cursor: pointer;    
+    }    
+    
+    .cake {    
+      font-size: 5rem;    
+      filter: drop-shadow(0 0 15px rgba(255, 209, 102, 0.6));    
+    }    
+    
+    .flame {    
+      font-size: 1.8rem;    
+      position: absolute;    
+      top: -10px;    
+      left: 50%;    
+      transform: translateX(-50%);    
+      animation: flicker 0.6s infinite alternate;    
+    }    
+    
+    /* Cartas de Deseos */    
+    .wishes-grid {    
+      display: grid;    
+      grid-template-columns: repeat(2, 1fr);    
+      gap: 12px;    
+      margin-bottom: 20px;    
+      width: 100%;    
+    }    
+    
+    .wish-card {    
+      background: rgba(0, 180, 216, 0.2);    
+      border: 1px solid rgba(144, 224, 239, 0.4);    
+      padding: 15px;    
+      border-radius: 14px;    
+      cursor: pointer;    
+      transition: all 0.4s ease;    
+      font-weight: bold;    
+      font-size: 0.95rem;    
+    }    
+    
+    .wish-card:hover {    
+      background: rgba(144, 224, 239, 0.4);    
+      transform: scale(1.03);    
+    }    
+    
+    .wish-card.revealed {    
+      background: linear-gradient(135deg, #00b4d8, #03045e);    
+      border-color: #ffd166;    
+      color: #ffd166;    
+    }    
+    
+    /* Minijuego */    
+    #game-canvas {    
+      background: #03045e;    
+      border: 2px solid #90e0ef;    
+      border-radius: 15px;    
+      margin-bottom: 10px;    
+    }    
+    
+    @keyframes fadeIn {    
+      from { opacity: 0; transform: scale(0.92); }    
+      to { opacity: 1; transform: scale(1); }    
+    }    
+    
+    @keyframes fallFood {    
+      0% { top: 0px; opacity: 1; }    
+      100% { top: 310px; opacity: 0; }    
+    }    
+    
+    @keyframes riseBubble {    
+      0% { bottom: 0px; opacity: 0.8; transform: scale(0.5); }    
+      100% { bottom: 330px; opacity: 0; transform: scale(1.3); }    
+    }    
+    
+    @keyframes dropChoco {    
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }    
+      100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }    
+    }    
+    
+    @keyframes flicker {    
+      0% { opacity: 0.8; transform: translateX(-50%) scale(0.9); }    
+      100% { opacity: 1; transform: translateX(-50%) scale(1.1); }    
+    }    
+  </style>    
+</head>    
+<body>    
+    
+  <div class="wave wave1"></div>    
+  <div class="wave wave2"></div>    
+    
+  <!-- Audio de la canción -->    
+  <audio id="bg-music" loop>    
+    <source src="musica.mp3" type="audio/mpeg">    
+  </audio>    
+    
+  <!-- Control de audio -->    
+  <div class="music-control">    
+    🎵 <button class="btn" id="music-btn" style="padding: 4px 10px; font-size: 0.8rem; margin: 0;" onclick="toggleMusic()">Activar Música 🔊</button>    
+  </div>    
+    
+  <!-- PANTALLA 1: Inicio -->    
+  <div id="screen1" class="screen active">    
+    <h1>¡Feliz Cumpleaños Diego! 🌟</h1>    
+    <p>💙</p>    
+    <button class="btn" onclick="startExperience()">Comenzar ✨</button>    
+  </div>    
+    
+  <!-- PANTALLA 2: Bienvenida + Pastel -->    
+  <div id="screen2" class="screen">    
+    <h1>¡MUY FELIZ CUMPLEAÑOS! 🎉</h1>    
+    <p>Espero te guste este detalle que hice especialmente para ti,
+pide tu deseo 🎂 </p>    
+        
+    <div class="cake-container" onclick="blowCandle()">    
+      <div class="flame" id="flame">🔥</div>    
+      <div class="cake">🎂</div>    
+    </div>    
+    <p style="font-size: 0.9rem; color: #ffd166;" id="candle-text">Toca el pastel o presiona abajo para apagar la vela 🕯️</p>    
+    
+    <div class="btn-group">    
+      <button class="btn" onclick="blowCandle()">Soplar la Vela 💨</button>    
+      <button class="btn" onclick="goToScreen(3)">Ir al Menú 🚀</button>    
+    </div>    
+  </div>    
+    
+  <!-- PANTALLA 3: Menú Principal -->    
+  <div id="screen3" class="screen">    
+    <h1>Menú Principal 🌊</h1>    
+    <p>Elige qué quieres explorar hoy:</p>    
+    <div class="btn-group">    
+      <button class="btn" onclick="goToScreen(4)">Acuario 🐠</button>    
+      <button class="btn" onclick="goToScreen(5)">🎂</button>    
+      <button class="btn" onclick="goToScreen(6)"> 💌</button>    
+      <button class="btn" onclick="goToScreen(7)">Deseos Mágicos 🔮</button>    
+      <button class="btn" onclick="goToScreen(8)">Atrapa Chocolates 🎮</button>    
+    </div>    
+  </div>    
+    
+  <!-- PANTALLA 4: Acuario Interactivo -->    
+  <div id="screen4" class="screen">    
+    <h1>Acuario de Diego 🐟</h1>    
+    <div class="stats" id="happiness">Felicidad de los peces: 100% 😊</div>    
+    <p style="font-size: 0.85rem; margin-bottom: 8px;">    
+      💡 <i>Toca un pez para cambiarle el nombre o toca el agua para crear burbujas.</i>    
+    </p>    
+    
+    <div class="aquarium" id="aquarium" onclick="createBubble(event)">    
+      <!-- Peces renderizados dinámicamente -->    
+    </div>    
+    
+    <p style="font-size: 0.9rem; margin-bottom: 5px;">¡Alimenta a tus peces!</p>    
+    <div class="btn-group">    
+      <button class="btn" style="padding: 8px 15px;" onclick="feedFish('🍞')">Pan 🍞</button>    
+      <button class="btn" style="padding: 8px 15px;" onclick="feedFish('🪱')">Lombriz 🪱</button>    
+      <button class="btn" style="padding: 8px 15px;" onclick="feedFish('🍪')">Galleta 🍪</button>    
+      <button class="btn" style="padding: 8px 15px;" onclick="goToScreen(3)">⬅ Menú</button>    
+    </div>    
+  </div>    
+    
+  <!-- PANTALLA 5: Texto 1 -->    
+  <div id="screen5" class="screen">    
+    <h1>Feliz Cumpleaños 🎂 </h1>    
+        
+    <div class="card-message">    
+      <p>    
+        "Espero que tengas un muy feliz cumpleaños Diego, eres un gran amigo, te admiro y aprecio mucho. Ya te di tu regalo, pero te daré un 🍫."    
+      </p>    
+      <div class="signature">Tqm, con cariño, Isis.</div>    
+    </div>    
+    
+    <button class="btn" onclick="goToScreen(3)">⬅ Volver al menú</button>    
+  </div>    
+    
+  <!-- PANTALLA 6: Texto 2 (Carta) -->    
+  <div id="screen6" class="screen">    
+    <h1>✨</h1>    
+        
+    <div class="card-message">    
+      <p>    
+        "Eres el chico más extraordinario, claro como una nota musical y sincero como una melodía; eres la música que suena en mi cabeza desde que nos reencontramos."    
+      </p>    
+    </div>    
+    
+    <div class="btn-group">    
+      <button class="btn" onclick="rainChocolates()">¡Reclamar Chocolate! 🍫</button>    
+      <button class="btn" onclick="goToScreen(3)">⬅ Volver al menú</button>    
+    </div>    
+  </div>    
+    
+  <!-- PANTALLA 7: Deseos-->    
+  <div id="screen7" class="screen">    
+    <h1>Mis deseos para ti 🔮</h1>    
+    <p>Haz clic en cada tarjeta para descubrir un buen deseo para este nuevo año:</p>    
+    
+    <div class="wishes-grid">    
+      <div class="wish-card" onclick="revealWish(this, '✨ Mucho éxito en todos tus proyectos.')">🔮 Toca para abrir</div>    
+      <div class="wish-card" onclick="revealWish(this, 'Que logres encontrar la felicidad ☺️.')">🔮 Toca para abrir</div>    
+      <div class="wish-card" onclick="revealWish(this, 'Que siempre tengas inspiración para dibujar 🎨.')">🔮 Toca para abrir</div>    
+      <div class="wish-card" onclick="revealWish(this, '🍫 Infinitos chocolates y buena salud.')">🔮 Toca para abrir</div>    
+    </div>    
+    
+    <button class="btn" onclick="goToScreen(3)">⬅ Volver al menú</button>    
+  </div>    
+    
+  <!-- PANTALLA 8: Minijuego Atrapa Chocolates -->    
+  <div id="screen8" class="screen">    
+    <h1>Atrapa los Chocolates 🎮</h1>    
+    <p style="font-size: 0.9rem;">Mueve el ratón o desliza el dedo para atrapar los chocolates en la cesta.</p>    
+    <div class="stats" id="game-score">Puntos: 0</div>    
+        
+    <canvas id="game-canvas" width="300" height="220"></canvas>    
+    
+    <div class="btn-group">    
+      <button class="btn" style="padding: 8px 16px;" onclick="startGame()">Iniciar Juego 🏁</button>    
+      <button class="btn" style="padding: 8px 16px;" onclick="goToScreen(3)">⬅ Volver al menú</button>    
+    </div>    
+  </div>    
+    
+  <script>    
+    const music = document.getElementById('bg-music');    
+    const musicBtn = document.getElementById('music-btn');    
+    let happinessLevel = 100;    
+    let candleBlown = false;    
+    
+    let fishes = [    
+      { id: 1, name: "Nemo", emoji: "🐠", top: 20, left: 20, dir: 1 },    
+      { id: 2, name: "Burbujas", emoji: "🐟", top: 50, left: 60, dir: -1 },    
+      { id: 3, name: "Pulpito", emoji: "🐙", top: 70, left: 30, dir: 1 },    
+      { id: 4, name: "Azulito", emoji: "🐳", top: 35, left: 75, dir: -1 },    
+      { id: 5, name: "Dolly", emoji: "🐡", top: 80, left: 80, dir: 1 }    
+    ];    
+    
+    function startExperience() {    
+      playMusic();    
+      goToScreen(2);    
+    }    
+    
+    function playMusic() {    
+      music.play().then(() => {    
+        musicBtn.innerText = "Pausar Música 🔇";    
+      }).catch(err => {    
+        console.log("Música lista para activación por el usuario.");    
+      });    
+    }    
+    
+    function toggleMusic() {    
+      if (music.paused) {    
+        playMusic();    
+      } else {    
+        music.pause();    
+        musicBtn.innerText = "Activar Música 🔊";    
+      }    
+    }    
+    
+    /* Soplar Vela */    
+    function blowCandle() {    
+      if (!candleBlown) {    
+        document.getElementById('flame').style.display = 'none';    
+        document.getElementById('candle-text').innerText = '✨ ¡Deseo concedido! ¡Feliz cumpleaños Diego! ✨';    
+        confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });    
+        candleBlown = true;    
+      }    
+    }    
+    
+    /* Renderizar Peces */    
+    function renderFishes() {    
+      const aquarium = document.getElementById('aquarium');    
+      const currentFishEls = aquarium.querySelectorAll('.fish-container');    
+      currentFishEls.forEach(el => el.remove());    
+    
+      fishes.forEach(fish => {    
+        const fishEl = document.createElement('div');    
+        fishEl.className = 'fish-container';    
+        fishEl.style.top = fish.top + '%';    
+        fishEl.style.left = fish.left + '%';    
+        fishEl.onclick = (e) => {    
+          e.stopPropagation();    
+          renameFish(fish.id);    
+        };    
+    
+        fishEl.innerHTML = `    
+          <div class="fish-emoji" style="transform: scaleX(${fish.dir})">${fish.emoji}</div>    
+          <div class="fish-name">${fish.name}</div>    
+        `;    
+        aquarium.appendChild(fishEl);    
+      });    
+    }    
+    
+    function renameFish(id) {    
+      const fish = fishes.find(f => f.id === id);    
+      const newName = prompt("¿Qué nuevo nombre le quieres poner a este pez?", fish.name);    
+      if (newName && newName.trim() !== "") {    
+        fish.name = newName.trim();    
+        renderFishes();    
+      }    
+    }    
+    
+    setInterval(() => {    
+      fishes.forEach(fish => {    
+        let moveX = (Math.random() - 0.5) * 15;    
+        let moveY = (Math.random() - 0.5) * 10;    
+            
+        fish.left = Math.min(Math.max(fish.left + moveX, 5), 85);    
+        fish.top = Math.min(Math.max(fish.top + moveY, 15), 75);    
+        fish.dir = moveX > 0 ? 1 : -1;    
+      });    
+      renderFishes();    
+    }, 2500);    
+    
+    function feedFish(foodEmoji) {    
+      const aquarium = document.getElementById('aquarium');    
+          
+      for (let i = 0; i < 4; i++) {    
+        const food = document.createElement('div');    
+        food.className = 'food-item';    
+        food.innerText = foodEmoji;    
+        food.style.left = (Math.random() * 80 + 10) + '%';    
+        aquarium.appendChild(food);    
+    
+        setTimeout(() => food.remove(), 2800);    
+      }    
+    
+      fishes.forEach((fish, idx) => {    
+        setTimeout(() => {    
+          fish.top = Math.max(fish.top - 20, 10);    
+          renderFishes();    
+        }, idx * 150);    
+      });    
+    
+      happinessLevel = Math.min(happinessLevel + 5, 100);    
+      document.getElementById('happiness').innerText = `Felicidad de los peces: ${happinessLevel}% 😊`;    
+    }    
+    
+    function createBubble(e) {    
+      const aquarium = document.getElementById('aquarium');    
+      const rect = aquarium.getBoundingClientRect();    
+      const x = e.clientX - rect.left;    
+    
+      const bubble = document.createElement('div');    
+      bubble.className = 'bubble';    
+      bubble.style.width = (Math.random() * 12 + 8) + 'px';    
+      bubble.style.height = bubble.style.width;    
+      bubble.style.left = x + 'px';    
+    
+      aquarium.appendChild(bubble);    
+      setTimeout(() => bubble.remove(), 2400);    
+    }    
+    
+    /* Animación de Chocolates (SIN CORAZONES AZULES) */    
+    function rainChocolates() {    
+      confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });    
+    
+      // Solo chocolates y elementos de fiesta    
+      const items = ['🍫', '🍫', '✨', '🎁', '🍫'];    
+      for (let i = 0; i < 35; i++) {    
+        setTimeout(() => {    
+          const drop = document.createElement('div');    
+          drop.className = 'choco-drop';    
+          drop.innerText = items[Math.floor(Math.random() * items.length)];    
+          drop.style.left = Math.random() * 100 + 'vw';    
+          drop.style.animationDuration = (Math.random() * 2 + 2) + 's';    
+          document.body.appendChild(drop);    
+    
+          setTimeout(() => drop.remove(), 3200);    
+        }, i * 90);    
+      }    
+    }    
+    
+    /* Revelar Deseos */    
+    function revealWish(element, wishText) {    
+      element.innerText = wishText;    
+      element.classList.add('revealed');    
+      confetti({ particleCount: 25, spread: 50, origin: { y: 0.7 } });    
+    }    
+    
+    /* Cambiar de Pantalla */    
+    function goToScreen(screenNumber) {    
+      if (screenNumber === 2 && !candleBlown) {    
+        confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });    
+      }    
+    
+      if (screenNumber === 4) {    
+        renderFishes();    
+      }    
+    
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));    
+      document.getElementById('screen' + screenNumber).classList.add('active');    
+    }    
+    
+    /* MINIJUEGO: ATRAPA LOS CHOCOLATES */    
+    const canvas = document.getElementById('game-canvas');    
+    const ctx = canvas.getContext('2d');    
+    let gameInterval;    
+    let score = 0;    
+    let basketX = 125;    
+    let chocoX = Math.random() * 260 + 10;    
+    let chocoY = 0;    
+    let chocoSpeed = 3;    
+    
+    function startGame() {    
+      score = 0;    
+      chocoY = 0;    
+      chocoX = Math.random() * 260 + 10;    
+      document.getElementById('game-score').innerText = `Puntos: ${score}`;    
+      clearInterval(gameInterval);    
+      gameInterval = setInterval(updateGame, 20);    
+    }    
+    
+    canvas.addEventListener('mousemove', (e) => {    
+      const rect = canvas.getBoundingClientRect();    
+      basketX = e.clientX - rect.left - 25;    
+    });    
+    
+    canvas.addEventListener('touchmove', (e) => {    
+      const rect = canvas.getBoundingClientRect();    
+      basketX = e.touches[0].clientX - rect.left - 25;    
+    });    
+    
+    function updateGame() {    
+      ctx.clearRect(0, 0, canvas.width, canvas.height);    
+    
+      // Dibujar Chocolate    
+      ctx.font = "20px Arial";    
+      ctx.fillText("🍫", chocoX, chocoY);    
+    
+      // Dibujar Canasta    
+      ctx.font = "24px Arial";    
+      ctx.fillText("🧺", basketX, 200);    
+    
+      chocoY += chocoSpeed;    
+    
+      // Colisión    
+      if (chocoY >= 185 && chocoY <= 205 && chocoX >= basketX - 10 && chocoX <= basketX + 40) {    
+        score += 10;    
+        document.getElementById('game-score').innerText = `Puntos: ${score}`;    
+        chocoY = 0;    
+        chocoX = Math.random() * 260 + 10;    
+        chocoSpeed += 0.2;    
+      }    
+    
+      // Caída al fondo    
+      if (chocoY > 220) {    
+        chocoY = 0;    
+        chocoX = Math.random() * 260 + 10;    
+      }    
+    }    
+  </script>    
+    
+</body>    
+</html>    
